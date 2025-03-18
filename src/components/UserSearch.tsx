@@ -5,32 +5,121 @@ import { Trie } from '../utils/searchTrie';
 import type { User } from '../types';
 
 export const UserSearch: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([
+    {
+      id: 1,
+      name: 'Aarav Patel',
+      username: 'aaravp',
+      email: 'aarav.patel@example.com',
+      address: {
+        street: '123 Gandhi Road',
+        suite: 'Apt. 101',
+        city: 'Mumbai',
+        zipcode: '400001',
+        geo: { lat: '18.9750', lng: '72.8258' },
+      },
+      phone: '+91 98765 43210',
+      website: 'aaravpatel.com',
+      company: {
+        name: 'Patel Industries',
+        catchPhrase: 'Innovating for a better tomorrow',
+        bs: 'leveraging cutting-edge technology',
+      },
+    },
+    {
+      id: 2,
+      name: 'Priya Sharma',
+      username: 'priyas',
+      email: 'priya.sharma@example.com',
+      address: {
+        street: '456 Nehru Lane',
+        suite: 'Apt. 202',
+        city: 'Delhi',
+        zipcode: '110001',
+        geo: { lat: '28.6139', lng: '77.2090' },
+      },
+      phone: '+91 87654 32109',
+      website: 'priyasharma.com',
+      company: {
+        name: 'Sharma Solutions',
+        catchPhrase: 'Empowering businesses',
+        bs: 'scalable business solutions',
+      },
+    },
+    {
+      id: 3,
+      name: 'Rahul Singh',
+      username: 'rahuls',
+      email: 'rahul.singh@example.com',
+      address: {
+        street: '789 Tagore Street',
+        suite: 'Apt. 303',
+        city: 'Bangalore',
+        zipcode: '560001',
+        geo: { lat: '12.9716', lng: '77.5946' },
+      },
+      phone: '+91 76543 21098',
+      website: 'rahulsingh.com',
+      company: {
+        name: 'Singh Tech',
+        catchPhrase: 'Transforming ideas into reality',
+        bs: 'innovative tech solutions',
+      },
+    },
+    {
+      id: 4,
+      name: 'Ananya Reddy',
+      username: 'ananyar',
+      email: 'ananya.reddy@example.com',
+      address: {
+        street: '321 Ambedkar Road',
+        suite: 'Apt. 404',
+        city: 'Hyderabad',
+        zipcode: '500001',
+        geo: { lat: '17.3850', lng: '78.4867' },
+      },
+      phone: '+91 65432 10987',
+      website: 'ananyareddy.com',
+      company: {
+        name: 'Reddy Enterprises',
+        catchPhrase: 'Driving excellence',
+        bs: 'sustainable business growth',
+      },
+    },
+    {
+      id: 5,
+      name: 'Vikram Gupta',
+      username: 'vikramg',
+      email: 'vikram.gupta@example.com',
+      address: {
+        street: '654 Bose Avenue',
+        suite: 'Apt. 505',
+        city: 'Kolkata',
+        zipcode: '700001',
+        geo: { lat: '22.5726', lng: '88.3639' },
+      },
+      phone: '+91 54321 09876',
+      website: 'vikramgupta.com',
+      company: {
+        name: 'Gupta Innovations',
+        catchPhrase: 'Pioneering the future',
+        bs: 'disruptive innovation',
+      },
+    },
+  ]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [trie, setTrie] = useState<Trie>(new Trie());
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Set to false since data is local
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        const data = await response.json();
-        setUsers(data);
-        
-        // Build Trie with user names
-        const newTrie = new Trie();
-        data.forEach((user: User) => newTrie.insert(user.name));
-        setTrie(newTrie);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
+    // Build Trie with user names
+    const newTrie = new Trie();
+    users.forEach((user) => newTrie.insert(user.name));
+    setTrie(newTrie);
+    setFilteredUsers(users); // Initialize filteredUsers with all users
+  }, [users]);
 
   const debouncedSearch = useCallback(
     debounce((term: string) => {
@@ -40,7 +129,7 @@ export const UserSearch: React.FC = () => {
       }
 
       const matchedNames = trie.search(term);
-      const filtered = users.filter(user => 
+      const filtered = users.filter((user) =>
         matchedNames.includes(user.name)
       );
       setFilteredUsers(filtered);
